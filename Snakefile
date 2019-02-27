@@ -102,6 +102,7 @@ rule bwa:
         'bwa index {input} 2>> {log};'
         'bwa mem -t {threads} {input} {params.reads_r1} {params.reads_r2}  2>> {log} | '
         'samtools sort -@ {threads} - > {output} 2>> {log};'
+        'samtools index -@ {threads} {output} 2>> {log};'
 
 
 rule pilon:
