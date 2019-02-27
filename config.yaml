@@ -1,20 +1,23 @@
 # ROUNDS
-racon_rounds: 2
-pilon_rounds: 2
+racon_rounds: 2  # Number of Racon rounds to run
+pilon_rounds: 2  # Number of Pilon rounds to run
+
 # DATA
-assembly: data/esox_lucius_v2_canu.fasta
-nanopore: data/nanopore_reads_combined.fastq.gz
+assembly: data/assembly.fasta  # Path to original assembly
+nanopore: data/nanopore_reads_combined.fastq.gz  # Path to Nanopore reads
 illumina:
-    R1: data/esox_lucius_eu_L001_R1.fastq.gz
-    R2: data/esox_lucius_eu_L001_R2.fastq.gz
+    R1: data/illumina_reads_L001_R1.fastq.gz  # Path to Illumina R1 reads
+    R2: data/illumina_reads_L001_R2.fastq.gz  # Path to Illumina R2 reads
+
 # RESOURCES
-threads: 32
-max_mem: 250G
-# PATHS
-pilon_output_dir: tmp
-racon_path: ~/tools/racon/build/bin/racon
-pilon_path: ~/tools/pilon/pilon.jar
-minimap2_path: ~/tools/minimap2/minimap2
-bwa_module: module add UHTS/Aligner/bwa/0.7.17
-samtools_module: module add UHTS/Analysis/samtools/1.8
-java_module: module add Development/java/1.8.0_202
+threads: 32  # Number of threads to use
+max_mem: 250G  # Max memory (for Pilon)
+
+# PATHS, EXECUTABLES, AND MODULES
+pilon_output_dir: tmp  # Output directory for Pilon (will be removed)
+racon_path: ~/tools/racon/build/bin/racon  # Path to Racon executable
+pilon_path: ~/tools/pilon/pilon.jar  # Path to Pilon jar
+minimap2_path: ~/tools/minimap2/minimap2  # Path to minimap2 executable
+bwa_module: module add UHTS/Aligner/bwa/0.7.17  # Command to load the BWA module (Vital-it)
+samtools_module: module add UHTS/Analysis/samtools/1.8  # Command to load the Samtools module (Vital-it)
+java_module: module add Development/java/1.8.0_202  # Command to load the Java module (Vital-it)
