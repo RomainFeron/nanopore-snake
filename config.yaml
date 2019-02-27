@@ -1,0 +1,20 @@
+# ROUNDS
+racon_rounds: 2
+pilon_rounds: 2
+# DATA
+assembly: data/esox_lucius_v2_canu.fasta
+nanopore: data/nanopore_reads_combined.fastq.gz
+illumina:
+    R1: data/esox_lucius_eu_L001_R1.fastq.gz
+    R2: data/esox_lucius_eu_L001_R2.fastq.gz
+# RESOURCES
+threads: 32
+max_mem: 250G
+# PATHS
+pilon_output_dir: tmp
+racon_path: ~/tools/racon/build/bin/racon
+pilon_path: ~/tools/pilon/pilon.jar
+minimap2_path: ~/tools/minimap2/minimap2
+bwa_module: module add UHTS/Aligner/bwa/0.7.17
+samtools_module: module add UHTS/Analysis/samtools/1.8
+java_module: module add Development/java/1.8.0_202
