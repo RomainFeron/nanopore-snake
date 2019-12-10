@@ -1,6 +1,6 @@
 # ROUNDS
 racon_rounds: 2  # Number of Racon rounds to run
-pilon_rounds: 2  # Number of Pilon rounds to run
+pilon_rounds: 4  # Number of Pilon rounds to run
 
 # DATA
 assembly: data/assembly.fasta  # Path to original assembly
@@ -10,14 +10,19 @@ illumina:
     R2: data/illumina_reads_L001_R2.fastq.gz  # Path to Illumina R2 reads
 
 # RESOURCES
-threads: 32  # Number of threads to use
-max_mem: 250G  # Max memory (for Pilon)
-
-# PATHS, EXECUTABLES, AND MODULES
-pilon_output_dir: tmp  # Output directory for Pilon (will be removed)
-racon_path: ~/tools/racon/build/bin/racon  # Path to Racon executable
-pilon_path: ~/tools/pilon/pilon.jar  # Path to Pilon jar
-minimap2_path: ~/tools/minimap2/minimap2  # Path to minimap2 executable
-bwa_module: module add UHTS/Aligner/bwa/0.7.17  # Command to load the BWA module (Vital-it)
-samtools_module: module add UHTS/Analysis/samtools/1.8  # Command to load the Samtools module (Vital-it)
-java_module: module add Development/java/1.8.0_202  # Command to load the Java module (Vital-it)
+minimap2:
+    threads: 16
+    memory: 64000
+    runtime: '1-00:00:00'
+racon:
+    threads: 16
+    memory: 64000
+    runtime: '2-00:00:00'
+bwa:
+    threads: 16
+    memory: 64000
+    runtime: '2-00:00:00'
+pilon:
+    threads: 16
+    memory: 256000
+    runtime: '2-00:00:00'
