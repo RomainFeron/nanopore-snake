@@ -94,7 +94,6 @@ def pilon_all_contigs(wildcards):
                         pilon_round=pilon_round,
                         extension=extension,
                         contig=glob_wildcards(f'output/.{pilon_base}_pilon{pilon_round}_{extension}/{{contig}}').contig)
-    print(batch_list)
     return batch_list
 
 
