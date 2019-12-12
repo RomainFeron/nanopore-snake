@@ -61,5 +61,5 @@ rule pilon:
         output_prefix = 'output/{pilon_base}_pilon{pilon_round}',
         max_mem = f'{int(config["pilon"]["memory"]) / 1000}G'
     shell:
-        'pilon --genome {input} --bam {input.bam} --output {params.output_prefix} --outdir {params.output_dir} '
+        'pilon --genome {input.assembly} --bam {input.bam} --output {params.output_prefix} --outdir {params.output_dir} '
         '--changes --fix all --threads 16 2> {log}'
