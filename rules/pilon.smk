@@ -74,8 +74,8 @@ rule pilon_contig:
         memory = config['pilon']['memory']
     params:
         runtime = config['pilon']['runtime'],
-        output_dir = 'output/tmp',
-        output_prefix = 'output/{pilon_base}_pilon{pilon_round}_{contig}',
+        output_dir = 'output/pilon',
+        output_prefix = '{pilon_base}_pilon{pilon_round}_{contig}',
         max_mem = f'{int(int(config["pilon"]["memory"]) / 1000)}G'
     shell:
         'pilon -Xmx{params.max_mem} --genome {input.assembly} --bam {input.bam} --output {params.output_prefix} --outdir {params.output_dir} '
