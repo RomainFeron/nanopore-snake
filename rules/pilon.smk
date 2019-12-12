@@ -59,7 +59,7 @@ rule pilon:
         runtime = config['pilon']['runtime'],
         output_dir = 'tmp',
         output_prefix = 'output/{pilon_base}_pilon{pilon_round}',
-        max_mem = f'{int(config["pilon"]["memory"]) / 1000}G'
+        max_mem = f'{int(int(config["pilon"]["memory"]) / 1000)}G'
     shell:
         'pilon -Xmx{params.max_mem} --genome {input.assembly} --bam {input.bam} --output {params.output_prefix} --outdir {params.output_dir} '
         '--changes --fix all --threads 16 2> {log}'
