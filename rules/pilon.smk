@@ -39,16 +39,33 @@ rule bwa:
         'samtools index -@ {threads} {output} 2>> {log};'
 
 
-rule pilon:
+checkpoint get_contigs:
+    input:
+        assembly = pilon_input
+    output:
+        directory('output/.{pilon_base}_pilon{pilon_round}_{extension}/')
+    benchmark:
+        'benchmarks/get_contigs_{pilon_base}_pilon{pilon_round}_{extension}.tsv'
+    log:
+        'logs/get_contigs_{pilon_base}_pilon{pilon_round}_{extension}.txt'
+    params:
+        output_dir = lambda wildcards, output: output[0].replace('/', '\\/')
+    shell:
+        'mkdir -p {output};'
+        'grep ">" {input} 2> {log} | sed "s/>/{params.output_dir}/g" 2>> {log} | xargs touch 2>> {log}'
+
+
+rule pilon_contig:
     input:
         assembly = pilon_input,
-        bam = 'output/{pilon_base}_{extension}_bwa_round{pilon_round}.bam'
+        bam = 'output/{pilon_base}_{extension}_bwa_round{pilon_round}.bam',
+        contig = 'output/.{pilon_base}_pilon{pilon_round}_{extension}/{contig}'
     output:
-        'output/{pilon_base}_pilon{pilon_round}.{extension}'
+        temp('output/pilon/{pilon_base}_pilon{pilon_round}_{contig}.{extension}')
     benchmark:
-        'benchmarks/{pilon_base}_{extension}_pilon_round{pilon_round}.tsv'
+        'benchmarks/{pilon_base}_{extension}_pilon_round{pilon_round}/{contig}.tsv'
     log:
-        'logs/{pilon_base}_{extension}_pilon_round{pilon_round}.txt'
+        'logs/{pilon_base}_{extension}_pilon_round{pilon_round}/{contig}.txt'
     conda:
         '../envs/polishing.yaml'
     threads:
@@ -57,9 +74,42 @@ rule pilon:
         memory = config['pilon']['memory']
     params:
         runtime = config['pilon']['runtime'],
-        output_dir = 'tmp',
-        output_prefix = 'output/{pilon_base}_pilon{pilon_round}',
+        output_dir = 'output/tmp',
+        output_prefix = 'output/{pilon_base}_pilon{pilon_round}_{contig}',
         max_mem = f'{int(int(config["pilon"]["memory"]) / 1000)}G'
     shell:
         'pilon -Xmx{params.max_mem} --genome {input.assembly} --bam {input.bam} --output {params.output_prefix} --outdir {params.output_dir} '
-        '--changes --fix all --threads 16 2> {log}'
+        '--changes --fix all --threads 16 --targets {wildcards.contig} 2> {log}'
+
+
+def pilon_all_contigs(wildcards):
+    '''
+    '''
+    pilon_contig_output = checkpoints.get_contigs.get(**wildcards).output[0]
+    pilon_base = wildcards.pilon_base
+    pilon_round = wildcards.pilon_round
+    extension = wildcards.extension
+    batch_list = expand('output/pilon/{pilon_base}_pilon{pilon_round}_{contig}.{extension}',
+                        pilon_base=pilon_base,
+                        pilon_round=pilon_round,
+                        extension=extension,
+                        contig=glob_wildcards(f'output/.{pilon_base}_pilon{pilon_round}_{extension}/{{contig}}').contig)
+    print(batch_list)
+    return batch_list
+
+
+rule pilon_round:
+    input:
+        pilon_all_contigs
+    output:
+        'output/{pilon_base}_pilon{pilon_round}.{extension}'
+    benchmark:
+        'benchmarks/{pilon_base}_{extension}_pilon_round{pilon_round}.tsv'
+    log:
+        'logs/{pilon_base}_{extension}_pilon_round{pilon_round}.txt'
+    threads:
+        config['pilon']['threads']
+    resources:
+        memory = config['pilon']['memory']
+    shell:
+        'cat {input} > {output} 2> {log}'
