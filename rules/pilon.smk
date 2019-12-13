@@ -37,6 +37,7 @@ rule bwa:
         'bwa mem -t {threads} {input.assembly} {input.reads_r1} {input.reads_r2}  2>> {log} | '
         'samtools sort - > {output} 2>> {log};'
         'samtools index -@ {threads} {output} 2>> {log};'
+        'rm *.{wildcards.extension}.*'
 
 
 checkpoint get_contigs:
@@ -71,7 +72,7 @@ rule pilon_contig:
     threads:
         config['pilon']['threads']
     resources:
-        memory = config['pilon']['memory']
+        memory = lambda wildcards, attempt: config['pilon']['memory'] * attempt
     params:
         runtime = config['pilon']['runtime'],
         output_dir = 'output/pilon',
@@ -106,9 +107,5 @@ rule pilon_round:
         'benchmarks/{pilon_base}_{extension}_pilon_round{pilon_round}.tsv'
     log:
         'logs/{pilon_base}_{extension}_pilon_round{pilon_round}.txt'
-    threads:
-        config['pilon']['threads']
-    resources:
-        memory = config['pilon']['memory']
     shell:
         'cat {input} > {output} 2> {log}'
