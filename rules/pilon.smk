@@ -80,7 +80,7 @@ rule pilon_contig:
         max_mem = f'{int(int(config["pilon"]["memory"]) / 1000)}G'
     shell:
         'pilon -Xmx{params.max_mem} --genome {input.assembly} --bam {input.bam} --output {params.output_prefix} --outdir {params.output_dir} '
-        '--changes --fix all --threads 16 --targets {wildcards.contig} 2> {log}'
+        '--changes --fix all --threads {threads} --targets {wildcards.contig} 2> {log}'
 
 
 def pilon_all_contigs(wildcards):
