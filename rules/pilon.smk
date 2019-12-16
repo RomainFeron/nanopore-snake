@@ -77,7 +77,7 @@ rule pilon_contig:
         runtime = config['pilon']['runtime'],
         output_dir = 'output/pilon',
         output_prefix = '{pilon_base}_pilon{pilon_round}_{contig}',
-        max_mem = lambda wildcards, resources: f'{int(resources.memory) / 1000) * attempt}G'
+        max_mem = lambda wildcards, resources: f'{int(resources.memory / 1000) * attempt}G'
     shell:
         'pilon -Xmx{params.max_mem} --genome {input.assembly} --bam {input.bam} --output {params.output_prefix} --outdir {params.output_dir} '
         '--changes --fix all --threads {threads} --targets {wildcards.contig} 2> {log}'
